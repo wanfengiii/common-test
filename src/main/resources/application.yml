@@ -1,0 +1,68 @@
+# debug: true
+spring:
+  application:
+    name: fish-api
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://101.133.166.139:3306/mysql?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 12345678
+  #  main:
+  #    lazy-initialization: true
+  #  data:
+  #    jpa:
+  #      repositories:
+  #        bootstrap-mode: lazy
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.spatial.dialect.mysql.MySQL56InnoDBSpatialDialect
+        #关键字处理
+        globally_quoted_identifiers: true
+    open-in-view: true
+    show-sql: true
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  cache:
+    cache-names: CACHE_COMMON_QUERY, CACHE_VIOLATION_LIMITER
+    caffeine:
+      spec: maximumSize=500,expireAfterAccess=600s
+  task:
+    scheduling:
+      pool:
+        size: 10
+  jackson:
+    time-zone: GMT+08
+server:
+  port: 8090
+  servlet:
+    context-path: /fish-api
+security:
+  enabled: true
+  # for dev purpose
+  #  runAs: admin
+  jwt:
+    token:
+      secret-key: secret-key
+      # set to 7 days by default
+      expire-length: 604800000
+  api:
+    chinatelecom:
+      # Ike, a temp place to store the secret, refactor to database store later
+      secret: chinatelecom-secret
+rest:
+  http:
+    # in milliseconds
+    timeout: 60000
+filestorage:
+  domain: http://localhost:8080
+  local:
+    path: /home/fish/images
+
+swagger:
+  production: false
+  basic:
+    enable: true
+    username: fangy
+    password: 123456
