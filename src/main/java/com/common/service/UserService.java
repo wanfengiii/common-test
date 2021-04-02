@@ -103,27 +103,10 @@ public class UserService {
     }
 
     /**
-     * change my own password
-     */
-    public void updatePasswordByUsername(UserPasswordDTO userPasswordDTO) {
-        String username = userPasswordDTO.getUsername();
-        if (!isPasswordValid(username, userPasswordDTO.getPassword())) {
-            throw new RestApiException(ApiError.BAD_CREDENTIALS);
-        }
-        Optional<User> optionalUser = userRepository.findByUsername(username);
-        if (!optionalUser.isPresent()) {
-            throw new RestApiException(ApiError.USERNAME_NOT_FOUND);
-        }
-        User u = optionalUser.get();
-        u.setPassword(passwordEncoder.encode(userPasswordDTO.getNewPassword()));
-        userRepository.save(u);
-    }
-
-    /**
      * admin reset user password
      */
-    public void adminResetPassword(UserPasswordDTO userPasswordDTO) {
-        Optional<User> optionalUser = userRepository.findById(userPasswordDTO.getUserId());
+    public void adminResetPassword(Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
         if (!optionalUser.isPresent()) {
             throw new RestApiException(ApiError.USERNAME_NOT_FOUND);
         }
@@ -164,7 +147,8 @@ public class UserService {
         }
 
         u.setPassword(passwordEncoder.encode(u.getPassword()));
-
+        u.setType("cus");
+        u.setCoin(0);
         userRepository.save(u);
         return jwtTokenProvider.createToken(username);
     }
@@ -354,10 +338,6 @@ public class UserService {
 
         Page<UserDTO> data = userRepository.findUsers(q, pageable);
         return PageUtils.transform(data, e -> {
-            //区域列名
-            e.setDistrictName(propertiesUtil.getDistrictText(e.getDistrict()));
-            //用户类型列
-            e.setTypeName(propertiesUtil.getUsertypeText(e.getType()));
             //密码置空
             e.setPassword(null);
             //角色列表

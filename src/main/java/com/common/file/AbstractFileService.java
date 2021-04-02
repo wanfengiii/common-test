@@ -1,6 +1,7 @@
 package com.common.file;
 
 import com.common.exceptions.FileException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FilenameUtils;
@@ -12,10 +13,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.*;
@@ -27,12 +25,31 @@ public abstract class AbstractFileService implements FileService, InitializingBe
 
     private Map<String, String> contentTypeMap;
 
+    private static final String XLS = "application/vnd.ms-excel";
+
+    private static final String XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
     protected String domain = "";
+
+    protected Long expires = 60000L;
+
+    protected String secretKey = "";
+
+    protected ObjectMapper objectMapper;
 
     public void setDomain(String domain) {
         this.domain = domain;
     }
+    public void setExpires(Long expires) {
+        this.expires = expires;
+    }
+    public void setSecretKey(String secretKey) {
+        this.secretKey = secretKey;
+    }
 
+    public void setObjectMapper(ObjectMapper om) {
+        this.objectMapper = om;
+    }
     @Override
     public void afterPropertiesSet() throws Exception {
         initMappings();
@@ -48,9 +65,12 @@ public abstract class AbstractFileService implements FileService, InitializingBe
         contentTypeMap.put("xml", APPLICATION_XML_VALUE);
         contentTypeMap.put("html", TEXT_HTML_VALUE);
         contentTypeMap.put("json", APPLICATION_JSON_VALUE);
+        contentTypeMap.put("xls", XLS);
+        contentTypeMap.put("xlsx", XLSX);
+        contentTypeMap.put("jpg", IMAGE_JPEG_VALUE);
         this.contentTypeMap = ImmutableMap.copyOf(contentTypeMap);
     }
-    
+
     @Override
     public String guessContentType(String pathname) {
         String ext = FilenameUtils.getExtension(pathname);
@@ -83,13 +103,14 @@ public abstract class AbstractFileService implements FileService, InitializingBe
         if (file == null || file.isEmpty()) {
             return null;
         }
-        
+
         if (!overwrite) {
             // concurrency is not taken into consideration
             pathname = suggestName(pathname);
         }
 
         doUpload(pathname, file);
+
         return pathname;
     }
 
@@ -121,10 +142,24 @@ public abstract class AbstractFileService implements FileService, InitializingBe
     }
 
     @Override
+    public String upload(String pathname, InputStream is, boolean overwrite) {
+        if (Objects.isNull(is)) {
+            return null;
+        }
+
+        if (!overwrite) {
+            // concurrency is not taken into consideration
+            pathname = suggestName(pathname);
+        }
+
+        return write(pathname,is);
+    }
+
+    @Override
     public List<String> getUrl(List<String> pathnames, boolean download) {
         return pathnames.stream()
-            .map(p -> getUrl(p, download))
-            .collect(Collectors.toList());
+                .map(p -> getUrl(p, download))
+                .collect(Collectors.toList());
     }
 
     protected String getUrl(String pathname, boolean download) {

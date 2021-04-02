@@ -35,7 +35,7 @@ public class SwaggerConfiguration {
 	     return new Docket(DocumentationType.SWAGGER_2)
 	     .apiInfo(apiInfo())
 	     .select()
-	     .apis(RequestHandlerSelectors.basePackage("com.inesat"))
+	     .apis(RequestHandlerSelectors.basePackage("com"))
 	     .paths(PathSelectors.any())
 	     .build().globalOperationParameters(parameters)
          .securityContexts(Lists.newArrayList(securityContext())).securitySchemes(Lists.<SecurityScheme>newArrayList(apiKey()));

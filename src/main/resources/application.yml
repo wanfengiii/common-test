@@ -4,7 +4,7 @@ spring:
     name: fish-api
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://101.133.166.139:3306/mysql?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://101.133.166.139:3306/fish?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
     username: root
     password: 12345678
   #  main:
@@ -56,9 +56,12 @@ rest:
     # in milliseconds
     timeout: 60000
 filestorage:
-  domain: http://localhost:8080
+  #  domain: http://localhost:9000
   local:
-    path: /home/fish/images
+    path: /home
+    temp: /temp
+    expires: 7200000 #文件加密过期时间
+    secretKey: tracekey #加密key
 
 swagger:
   production: false
@@ -66,3 +69,5 @@ swagger:
     enable: true
     username: fangy
     password: 123456
+commons:
+  defalutPassword: 111111

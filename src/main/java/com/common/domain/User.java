@@ -3,21 +3,16 @@ package com.common.domain;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
-@Entity
 @Data
-@EqualsAndHashCode(callSuper=true)
+@Entity(name = "User")
+@Table(name="user", catalog="fish")
 public class User extends AuditableEntity {
-
-    public static final String TYPE_GOV = "gov";
 
     public static final String TYPE_ENT = "ent";
 
-    public static final String TYPE_CONSUMER = "consumer";
+    public static final String TYPE_CONSUMER = "cus";
 
     public static final String TYPE_ADMIN = "admin";
 
@@ -29,20 +24,15 @@ public class User extends AuditableEntity {
 
     private String password;
 
-    private String firstname;
-
-    private String lastname;
+    private String name;
 
     private String phone;
 
     private String email;
 
-    private String avatar;
+    private String address;
 
     private String type;
 
-    private String district;
-
-    private String institute;
-
+    private int coin;
 }

@@ -1,16 +1,12 @@
 package com.common.api.dto;
 
-import com.common.domain.Role;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import java.util.List;
 
 @Data
-public class UserDTO {
-
-    private Long id;
+public class UserMsgDTO {
 
     @NotEmpty
 	@Size(min = 5, max = 64)
@@ -26,12 +22,4 @@ public class UserDTO {
     private String email;
 
     private String address;
-
-    private String type;
-
-    private List<Role> roles;
-
-    private String roleId;
-
-    private List<Long> roless;
 }

@@ -38,23 +38,13 @@ public class UserSupportRepositoryImpl extends AbstractJpaRepository<User, Long>
     private String findUsersFromSql(UserQO q) {
         StringBuilder sb = new StringBuilder("from user u left join userRole ur on u.id = ur.userId LEFT JOIN role r on ur.roleId = r.id where 1 = 1");
         if (StringUtils.isNotBlank(q.getQ())) {
-            sb.append(" and (u.username like :q or u.firstname like :q or u.lastname like :q)");
+            sb.append(" and (u.username like :q or u.name like :q )");
             toLikeValue(q, "q");
         }
-//        if (q.getRoleId() != null) {
-//            sb.append(" and ur.roleId = :roleId");
-//        }
+
         if (StringUtils.isNotBlank(q.getType())) {
             sb.append(" and u.type = :type");
         }
-        if (StringUtils.isNotBlank(q.getDistrict())) {
-            sb.append(" and u.district = :district");
-        }
-        if (StringUtils.isNotBlank(q.getInstitute())) {
-            sb.append(" and u.institute = :institute");
-        }
-//        sb.append(" GROUP BY u.id");
-//        sb.append(" order by u.lastModifiedDate desc");
         return sb.toString();
     }
 

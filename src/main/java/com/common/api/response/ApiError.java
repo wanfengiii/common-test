@@ -22,6 +22,8 @@ public enum ApiError {
 
     BAD_CREDENTIALS(FORBIDDEN, "auth.bad_credentials", "用户名或密码错误"),
 
+    VALIDATE_NOT_PASS(BAD_REQUEST, "validation.uri_not_valid", "{0}"),
+
     BAD_PASSWORD(BAD_REQUEST, "auth.not_valid_password", "密码不能为纯数字"),
 
     USERNAME_NOT_FOUND(FORBIDDEN, "auth.username_not_found", "非法的用户"),
@@ -47,8 +49,9 @@ public enum ApiError {
     VIOLATION_NO_VIOLATION(BAD_REQUEST, "violation.no_violation", "违规数据无违法项"),
 
     RESOURCE_ENT_NOT_FOUND(NOT_FOUND, "common.resource_not_found", "企业代码{0}不存在"),
+    DELETE_FAILED(BAD_REQUEST, "common.delete_failed", "删除失败: {0}"),
+    SAVE_FAILED(BAD_REQUEST, "common.save_failed", "保存失败: {0}");
 
-    ;
 
     // ----- /business related -----
 	

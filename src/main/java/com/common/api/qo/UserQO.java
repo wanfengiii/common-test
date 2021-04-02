@@ -12,8 +12,4 @@ public class UserQO implements QueryObject {
 
     private Long roleId;
 
-    private String district;
-
-    private String institute;
-
 }

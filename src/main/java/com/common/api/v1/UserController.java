@@ -6,6 +6,7 @@ import com.common.api.response.ApiError;
 import com.common.api.response.DataResponse;
 import com.common.domain.User;
 import com.common.exceptions.RestApiException;
+import com.common.security.Auth;
 import com.common.service.UserService;
 import com.common.util.PropertiesUtils;
 import io.swagger.annotations.ApiOperationSupport;
@@ -34,9 +35,6 @@ public class UserController {
     @Autowired
     private ModelMapper modelMapper;
 
-    @Autowired
-    private PropertiesUtils propertiesUtil;
-
     @PostMapping("/login")
     public DataResponse<String> login(@Valid @RequestBody LoginDTO loginDTO) {
         String token = userService.login(loginDTO);
@@ -44,26 +42,15 @@ public class UserController {
     }
 
     @PutMapping("/password")
-    @ApiOperationSupport(ignoreParameters = {"userPasswordDTO.username"})
     public DataResponse<String> changePassword(@Valid @RequestBody UserPasswordDTO userPasswordDTO) {
         userService.updatePassword(userPasswordDTO);
         return DataResponse.success();
     }
 
-    @ApiOperationSupport(ignoreParameters = {"userPasswordDTO.userId"})
-    @PutMapping("/updatePasswordByUsername")
-    public DataResponse<String> updatePasswordByUsername(@Valid @RequestBody UserPasswordDTO userPasswordDTO) {
-        userService.updatePasswordByUsername(userPasswordDTO);
-        return DataResponse.success();
-    }
-
-    @PutMapping("/resetpassword")
+    @PutMapping("/resetpassword/{userId}")
     @PreAuthorize(USER_ADMIN_RESET_PASSWORD)
-    public DataResponse<String> adminResetPassword(@Valid @RequestBody UserPasswordDTO userPasswordDTO) {
-        if (userPasswordDTO.getUserId() == null) {
-            throw new RestApiException(ApiError.METHOD_PARAM_REQUIRED, "userId");
-        }
-        userService.adminResetPassword(userPasswordDTO);
+    public DataResponse<String> adminResetPassword(@PathVariable Long id) {
+        userService.adminResetPassword(id);
         return DataResponse.success();
     }
 
@@ -71,40 +58,6 @@ public class UserController {
     @PreAuthorize(USER_LIST)
     public Page<UserDTO> listUsers(UserQO q, Pageable pageable) {
         return userService.findUsers(q, pageable);
-    }
-
-    @PostMapping
-    @PreAuthorize(USER_CREATE)
-    public DataResponse<String> createUser(@Valid @RequestBody UserDTO u) {
-        User user = modelMapper.map(u, User.class);
-        String token = userService.createUser(user);
-        return DataResponse.of(token);
-    }
-
-    @PutMapping("/{id}")
-    @PreAuthorize(USER_UPDATE)
-    public DataResponse<String> updateUser(@PathVariable Long id, @RequestBody UserDTO u) {
-        Optional<User> userOpt = userService.findUser(id);
-        if (!userOpt.isPresent()) {
-            return DataResponse.fail();
-        }
-
-        User user = userOpt.get();
-        updateUserValue(user, u);
-
-        userService.updateUser(user);
-        return DataResponse.success();
-    }
-
-    // only the following props need to be updated, use a separated api for password reset
-    private void updateUserValue(User from, UserDTO to) {
-        from.setAvatar(to.getAvatar());
-        from.setPhone(to.getPhone());
-        from.setEmail(to.getEmail());
-        from.setFirstname(to.getFirstname());
-        from.setLastname(to.getLastname());
-        from.setDistrict(to.getDistrict());
-        from.setInstitute(to.getInstitute());
     }
 
     @GetMapping("/{id}")
@@ -118,6 +71,53 @@ public class UserController {
         user.setPassword(null);
         return user;
     }
+
+    @PostMapping
+    @PreAuthorize(USER_CREATE)
+    public DataResponse<String> createUser(@Valid @RequestBody UserMsgDTO u) {
+        User user = modelMapper.map(u, User.class);
+        String token = userService.createUser(user);
+        return DataResponse.of(token);
+    }
+
+    @PutMapping("/{id}")
+    public DataResponse<String> updateUser(@PathVariable Long id, @RequestBody UserMsgDTO u) {
+        Optional<User> userOpt = userService.findUser(id);
+        if (!userOpt.isPresent()) {
+            return DataResponse.fail();
+        }
+        String username = Auth.getUsername();
+        if(username.equals(u.getUsername())){
+            throw new RestApiException(USERNAME_NOT_FOUND);
+        }
+        User user = userOpt.get();
+        updateUserValue(user, u);
+
+        userService.updateUser(user);
+        return DataResponse.success();
+    }
+
+    /**
+     * 用户删除
+     */
+    @DeleteMapping("/{id}")
+    @PreAuthorize(USER_DELETE)
+    public DataResponse<String> delete(@PathVariable Long id) {
+        Optional<User> userOpt = userService.findUser(id);
+        if (!userOpt.isPresent()) {
+            return DataResponse.fail();
+        }
+        userService.deleteData(id);
+        return DataResponse.success();
+    }
+
+    // only the following props need to be updated, use a separated api for password reset
+    private void updateUserValue(User from, UserMsgDTO to) {
+        from.setPhone(to.getPhone());
+        from.setEmail(to.getEmail());
+        from.setAddress(to.getAddress());
+    }
+
 
     @GetMapping("/me")
     public UserInfoDTO whoami() {
@@ -140,41 +140,4 @@ public class UserController {
         userService.updateUserRole(id, roles);
         return DataResponse.success();
     }
-
-    @GetMapping("/commons/{type}")
-//    @PreAuthorize(USER_LIST)
-    public DataResponse<List<CodeValueDTO>> listCommons(@PathVariable String type, String district, String institute) {
-        List<CodeValueDTO> list = new ArrayList<CodeValueDTO>();
-        if ("institute".equals(type)) {
-            list = propertiesUtil.getInstituteList(district,institute);
-        } else if ("district".equals(type)) {
-            list = propertiesUtil.getDistrictList(district);
-        } else if ("usertype".equals(type)) {
-            list = propertiesUtil.getUsertype();
-        } else if ("roletype".equals(type)) {
-            list = propertiesUtil.getRoletype();
-        } else if ("zjtype".equals(type)) {
-            list = propertiesUtil.getZjtype();
-        } else if ("station".equals(type)) {
-            list = propertiesUtil.getStation();
-        } else if ("zwstatus".equals(type)) {
-            list = propertiesUtil.getZwstatus();
-        }
-        return DataResponse.of(list);
-    }
-
-    /**
-     * 用户删除
-     */
-    @DeleteMapping("/{id}")
-    @PreAuthorize(USER_DELETE)
-    public DataResponse<String> delete(@PathVariable Long id) {
-        Optional<User> userOpt = userService.findUser(id);
-        if (!userOpt.isPresent()) {
-            return DataResponse.fail();
-        }
-        userService.deleteData(id);
-        return DataResponse.success();
-    }
-
 }
