@@ -11,10 +11,10 @@ import java.util.Optional;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long>{
 
-    @Query(value = "SELECT c FROM Category c where c.parent is null or c.parent = ''")
+    @Query(value = "SELECT c FROM Category c where c.parent is null or c.parent = '' order by  sort")
     List<Category> findParent();
 
-    @Query(value = "SELECT c FROM Category c where c.parent = ?1")
+    @Query(value = "SELECT c FROM Category c where c.parent = ?1 order by  sort")
     List<Category> findChildByCode(String code);
 
     @Query(value = "SELECT distinct c.name FROM Category c where c.parent = ?1")

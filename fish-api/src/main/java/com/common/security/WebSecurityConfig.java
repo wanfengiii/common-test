@@ -58,10 +58,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         lt.add("/web/**");
         lt.add( "/app/**");
         lt.add("/v1/users/login");
-        lt.add("/expo/v1/news/**");
-        lt.add("/api/v1/eventReport");
-        lt.add("/expo/v1/evaluation/add");
-        lt.add("/expo/v1/external/**");
+        lt.add("/v1/category/**");
+        lt.add("/v1/product/**");
         if(swagger_enabled) {
             lt.add("/doc.html");
             lt.add("/webjars/**");

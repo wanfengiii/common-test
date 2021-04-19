@@ -21,6 +21,9 @@ public class Category {
     @Column(name = "parent")
     private String parent;
 
+    @Column(name = "sort")
+    private Integer sort;
+
     @Column(name = "description")
     private String description;
 }

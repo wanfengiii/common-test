@@ -52,6 +52,7 @@ public class CategoryService {
 
         BeanUtil.copyPropertiesQuietly(saveVo, c);
         categoryRepository.save(c);
+        c.setSort(1);
         return true;
     }
 
