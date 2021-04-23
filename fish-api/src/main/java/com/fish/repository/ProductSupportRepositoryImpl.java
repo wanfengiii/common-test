@@ -1,7 +1,7 @@
 package com.fish.repository;
 
 import com.common.repository.AbstractJpaRepository;
-import com.fish.api.dto.ProductDto;
+import com.fish.api.dto.ProductDTO;
 import com.fish.api.qo.ProductQO;
 import com.fish.domain.mysql.Product;
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +19,7 @@ public class ProductSupportRepositoryImpl extends AbstractJpaRepository<Product,
 
 
     @Override
-    public Page<ProductDto> getProduct(ProductQO qo, Pageable pageable) {
+    public Page<ProductDTO> getProduct(ProductQO qo, Pageable pageable) {
 
         StringBuilder sqlSelect = new StringBuilder("SELECT t1.*");
         StringBuilder sqlContent = new StringBuilder(" FROM product t1")
@@ -52,6 +52,6 @@ public class ProductSupportRepositoryImpl extends AbstractJpaRepository<Product,
         String querySql = sqlSelect.append(sqlContent).append(sqlOrder).toString();
         String countSql = "SELECT COUNT(t1.id)" + sqlContent.toString();
 
-        return getPageResult(countSql, querySql, qo, pageable, ProductDto.class);
+        return getPageResult(countSql, querySql, qo, pageable, ProductDTO.class);
     }
 }

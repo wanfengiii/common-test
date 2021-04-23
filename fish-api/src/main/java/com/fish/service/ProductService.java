@@ -3,12 +3,10 @@ package com.fish.service;
 import com.common.api.response.ApiError;
 import com.common.exceptions.RestApiException;
 import com.common.file.FileService;
-import com.fish.api.dto.ProductDto;
+import com.fish.api.dto.ProductDTO;
 import com.fish.api.qo.ProductQO;
 import com.fish.domain.mysql.Product;
 import com.fish.repository.ProductRepository;
-import io.netty.util.internal.StringUtil;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,11 +44,19 @@ public class ProductService {
         return  "/images/fish/product/" + code + "/" + fileName;
     }
 
-    public Page<ProductDto> getProduct(ProductQO qo, Pageable pageable){
+    public Page<ProductDTO> getProduct(ProductQO qo, Pageable pageable){
         return productRepository.getProduct(qo,pageable);
     }
 
-    public void editProduct(ProductDto productDto){
+    public ProductDTO getProductById(Long id){
+        ProductDTO productDto = new ProductDTO();
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RestApiException(ApiError.RESOURCE_NOT_FOUND,id));
+        BeanUtils.copyProperties(product,productDto);
+        return productDto;
+    }
+
+    public void editProduct(ProductDTO productDto){
         if(null == productDto.getId()){
             Product product = new Product();
             BeanUtils.copyProperties(productDto,product);

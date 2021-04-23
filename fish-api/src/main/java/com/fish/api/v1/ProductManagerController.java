@@ -1,7 +1,7 @@
 package com.fish.api.v1;
 
 import com.common.api.response.DataResponse;
-import com.fish.api.dto.ProductDto;
+import com.fish.api.dto.ProductDTO;
 import com.fish.service.ProductService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,7 +33,7 @@ public class ProductManagerController {
 
     @ApiOperation("编辑新增产品")
     @PostMapping
-    public DataResponse editProduct(@RequestBody @Valid ProductDto productDto){
+    public DataResponse editProduct(@RequestBody @Valid ProductDTO productDto){
         productService.editProduct(productDto);
         return DataResponse.success() ;
     }

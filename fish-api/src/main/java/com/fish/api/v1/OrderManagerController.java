@@ -12,7 +12,7 @@ import java.util.List;
 
 @Api(value = "订单Api", tags = "订单Api")
 @RestController
-@RequestMapping("/v1/order")
+@RequestMapping("/v1/order/manager")
 public class OrderManagerController {
     @Autowired
     private CategoryService categoryService;

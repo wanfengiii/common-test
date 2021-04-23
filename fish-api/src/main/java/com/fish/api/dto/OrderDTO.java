@@ -2,8 +2,10 @@ package com.fish.api.dto;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
-public class OrderDto {
+public class OrderDTO {
     private Long id;
 
     private Integer price;
@@ -14,5 +16,13 @@ public class OrderDto {
 
     private String desc;
 
+    private String phone;
+
+    private String userName;
+
+    private String address;
+
     private Integer isTurn;
+
+    private LocalDateTime createdDate;
 }
