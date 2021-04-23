@@ -2,6 +2,7 @@
 node_modules
 /dist
 /kms
+/target
 alias.config.js
 # local env files
 #.env.local
