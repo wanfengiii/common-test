@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
-@Api(value = "产品相关Api", tags = "产品相关Api")
+@Api(value = "（商家）产品管理Api", tags = "（商家）产品管理Api")
 @RestController
 @RequestMapping("/v1/product/manager")
 public class ProductManagerController {

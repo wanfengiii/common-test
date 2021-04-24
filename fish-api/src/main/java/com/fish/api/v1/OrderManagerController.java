@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(value = "订单Api", tags = "订单Api")
+@Api(value = "（商家）订单管理Api", tags = "（商家）订单管理Api")
 @RestController
 @RequestMapping("/v1/order/manager")
 public class OrderManagerController {

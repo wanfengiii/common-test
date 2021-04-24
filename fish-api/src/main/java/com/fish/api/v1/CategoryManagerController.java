@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Api(value = "分类相关Api", tags = "分类相关Api")
+@Api(value = "（商家）分类管理Api", tags = "（商家）分类管理Api")
 @RestController
 @RequestMapping("/v1/category/manager")
 public class CategoryManagerController {
