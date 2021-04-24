@@ -19,21 +19,8 @@ public class CategoryController {
 
     @ApiOperation("查询分类列表")
     @GetMapping
-    public DataResponse<List<Category>> getLiftEventList(@RequestParam(required = false) String code) {
-        return DataResponse.of(categoryService.getAllCategories(code));
-    }
-
-    @ApiOperation("编辑新增分类")
-    @PostMapping
-    public DataResponse editCategory(@RequestBody Category category){
-        categoryService.saveCategory(category);
-        return DataResponse.success() ;
-    }
-
-    @ApiOperation("删除分类")
-    @DeleteMapping("/{id}")
-    public DataResponse deleteCategory(@PathVariable Long id){
-        categoryService.deleteCategory(id);
-        return DataResponse.success() ;
+    public DataResponse<List<Category>> getLiftEventList(@RequestParam(required = false) String code,
+                                                         @RequestParam Long entId) {
+        return DataResponse.of(categoryService.getAllCategories(code,entId));
     }
 }

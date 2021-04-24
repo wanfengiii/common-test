@@ -148,7 +148,6 @@ public class UserService {
 
         u.setPassword(passwordEncoder.encode(u.getPassword()));
         u.setType("cus");
-        u.setCoin(0);
         userRepository.save(u);
         return jwtTokenProvider.createToken(username);
     }

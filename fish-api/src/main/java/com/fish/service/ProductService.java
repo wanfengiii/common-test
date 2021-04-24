@@ -3,6 +3,7 @@ package com.fish.service;
 import com.common.api.response.ApiError;
 import com.common.exceptions.RestApiException;
 import com.common.file.FileService;
+import com.common.security.Auth;
 import com.fish.api.dto.ProductDTO;
 import com.fish.api.qo.ProductQO;
 import com.fish.domain.mysql.Product;
@@ -45,6 +46,9 @@ public class ProductService {
     }
 
     public Page<ProductDTO> getProduct(ProductQO qo, Pageable pageable){
+        if(null == qo.getEntId()){
+            qo.setEntId(1L);
+        }
         return productRepository.getProduct(qo,pageable);
     }
 
@@ -62,6 +66,7 @@ public class ProductService {
             BeanUtils.copyProperties(productDto,product);
             product.setIsTurn(0);
             product.setStatus(1);
+            product.setEntId(Auth.getEntId());
             productRepository.save(product);
         }else{
             Product product =  productRepository.findById(productDto.getId())

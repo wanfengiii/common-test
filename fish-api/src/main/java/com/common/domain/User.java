@@ -20,6 +20,8 @@ public class User extends AuditableEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long entId;
+
     private String username;
 
     private String password;
@@ -33,6 +35,4 @@ public class User extends AuditableEntity {
     private String address;
 
     private String type;
-
-    private int coin;
 }

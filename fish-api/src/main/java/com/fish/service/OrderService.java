@@ -4,6 +4,8 @@ import com.common.api.response.ApiError;
 import com.common.domain.User;
 import com.common.exceptions.RestApiException;
 import com.common.security.Auth;
+import com.common.util.BeanUtil;
+import com.fish.api.dto.FullOrderDTO;
 import com.fish.api.dto.OrderDTO;
 import com.fish.api.dto.OrderDetailsVO;
 import com.fish.api.dto.OrderVO;
@@ -45,6 +47,7 @@ public class OrderService {
         // 设置订单信息
         order.setDesc(orderVO.getDesc());
         order.setIsTurn(orderVO.getIsTurn());
+        order.setEntId(null == orderVO.getEntId() ? 1L : orderVO.getEntId());
         List<OrderDetails> lt = vos.stream().map(this::handleData).collect(Collectors.toList());
         // 算出总价
         Integer allPrice = lt.stream().map(OrderDetails::getPrice).reduce(0,Integer::sum);
@@ -90,11 +93,58 @@ public class OrderService {
     }
 
     public Page<OrderDTO> getOrder(OrderQO qo, Pageable pageable){
+        if(Auth.isCus()) {
+            String userName = Auth.getUsername();
+            qo.setUserName(userName);
+        }
+        if(Auth.isEnterpriseUser()) {
+            qo.setEntId(Auth.getEntId());
+        }
         return orderRepository.getOrder(qo,pageable);
     }
 
+    public FullOrderDTO getOrderById(Long id){
+        FullOrderDTO fullOrderDTO = new FullOrderDTO();
+        Order order =  orderRepository.getOne(id);
+        BeanUtil.copyPropertiesQuietly(order, fullOrderDTO);
+
+        List<OrderDetails> orderDetails =  orderDetailsRepository.findByOrderId(id);
+        fullOrderDTO.setDetails(orderDetails);
+        return fullOrderDTO;
+
+    }
 
 
+    public void removeOrder(Long id){
+        String userName = Auth.getUsername();
+        Order order = orderRepository.getOne(id);
+        if(userName.equals(order.getCreatedBy()) && order.getStatus().intValue() == 1){
+            orderRepository.delete(order);
+            orderDetailsRepository.deleteByOrderById(id);
+        }
+    }
 
+    public void confirmOrder(Long id){
+        Order order = orderRepository.getOne(id);
+        if( order.getStatus().intValue() == 1){
+            order.setStatus(2);
+            orderRepository.save(order);
+        }
+    }
 
+    public void completeOrder(Long id){
+        Order order = orderRepository.getOne(id);
+        if( order.getStatus().intValue() == 2){
+            order.setStatus(3);
+            orderRepository.save(order);
+        }
+    }
+
+    public void cancelOrder(Long id){
+        Order order = orderRepository.getOne(id);
+        if( order.getStatus().intValue() <= 2){
+            order.setStatus(4);
+            orderRepository.save(order);
+        }
+    }
 }

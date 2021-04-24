@@ -5,6 +5,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Objects;
+
 public final class Auth {
 
     /**
@@ -19,6 +21,12 @@ public final class Auth {
      * }
      * 
      */
+    private final static String ADMIN = "admin";
+
+    private final static String ENT = "ent";
+
+    private final static String CUS = "cus";
+
     public static String getUsername() {
       Authentication auth = SecurityContextHolder.getContext().getAuthentication(); // for reactive part, ReactiveSecurityContextHolder
       return getUsername(auth);
@@ -54,6 +62,27 @@ public final class Auth {
           }
       }
       return username;
-  }
+     }
 
+    public static boolean isEnterpriseUser() {
+        return getUserType().equals(ENT);
+    }
+
+    public static boolean isAdmin() {
+        return getUserType().equals(ADMIN);
+    }
+
+    public static boolean isCus() {
+        return getUserType().equals(CUS);
+    }
+
+    public static String getUserType() {
+        User domainUser = getDomainUser();
+        return Objects.isNull(domainUser) ? "cus" : domainUser.getType();
+    }
+
+    public static Long getEntId() {
+        User domainUser = getDomainUser();
+        return Objects.isNull(domainUser) ? null : domainUser.getEntId();
+    }
 }

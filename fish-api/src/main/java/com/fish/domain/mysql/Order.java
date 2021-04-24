@@ -13,6 +13,8 @@ public class Order extends AuditableEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long entId;
+
     private Integer price;
 
     private Integer realPrice;

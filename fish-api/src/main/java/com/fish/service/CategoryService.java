@@ -2,12 +2,15 @@ package com.fish.service;
 
 import com.common.api.response.ApiError;
 import com.common.exceptions.RestApiException;
+import com.common.security.Auth;
 import com.common.util.BeanUtil;
 import com.fish.domain.mysql.Category;
 import com.fish.domain.mysql.Product;
 import com.fish.repository.CategoryRepository;
 import com.fish.repository.ProductRepository;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.auth.AUTH;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,22 +27,30 @@ public class CategoryService {
     @Autowired
     private ProductRepository productRepository;
 
-    public List<Category> getAllCategories(String code) {
+    public List<Category> getAllCategories(String code,Long entId) {
         if (StringUtils.isNotBlank(code)) {
             return categoryRepository.findChildByCode(code);
         } else {
-            return categoryRepository.findParent();
+            return categoryRepository.findParent(entId);
         }
+    }
+
+    public List<Category> getAllCategories(String code) {
+        return getAllCategories(code, Auth.getEntId());
     }
 
     @Transactional
     public boolean saveCategory(Category saveVo) {
+
+
         Category c = new Category();
         if (saveVo.getId() == null) {
             Optional<Category> cate = categoryRepository.findByCode(saveVo.getCode());
             if (cate.isPresent()) {
                 throw new RestApiException(ApiError.SAVE_FAILED, "产品类型" + saveVo.getCode() + "已存在！");
             }
+            Long entId = Auth.getEntId();
+            c.setEntId(entId);
         } else {
             c = categoryRepository.findById(saveVo.getId())
                     .orElseThrow(() -> new RestApiException(ApiError.SAVE_FAILED, saveVo.getId() + "不存在！"));
@@ -52,7 +63,6 @@ public class CategoryService {
 
         BeanUtil.copyPropertiesQuietly(saveVo, c);
         categoryRepository.save(c);
-        c.setSort(1);
         return true;
     }
 

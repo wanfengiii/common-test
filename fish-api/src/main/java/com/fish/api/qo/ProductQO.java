@@ -16,4 +16,6 @@ public class ProductQO implements QueryObject {
 
     private Integer isTurn;
 
+    private Long entId;
+
 }

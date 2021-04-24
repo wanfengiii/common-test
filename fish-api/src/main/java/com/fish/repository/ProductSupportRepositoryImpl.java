@@ -24,7 +24,7 @@ public class ProductSupportRepositoryImpl extends AbstractJpaRepository<Product,
         StringBuilder sqlSelect = new StringBuilder("SELECT t1.*");
         StringBuilder sqlContent = new StringBuilder(" FROM product t1")
                 .append(" INNER JOIN category t2 ON t1.category = t2.code")
-                .append(" where t1.status = 1");
+                .append(" where t1.status = 1 and t1.entId = :entId");
 
 
         StringBuilder sqlOrder = new StringBuilder();

@@ -11,8 +11,8 @@ import java.util.Optional;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long>{
 
-    @Query(value = "SELECT c FROM Category c where c.parent is null or c.parent = '' order by  sort")
-    List<Category> findParent();
+    @Query(value = "SELECT c FROM Category c where c.entId = ?1 and c.parent is null or c.parent = '' order by  sort")
+    List<Category> findParent(Long entId);
 
     @Query(value = "SELECT c FROM Category c where c.parent = ?1 order by  sort")
     List<Category> findChildByCode(String code);

@@ -21,7 +21,7 @@ public class OrderSupportRepositoryImpl extends AbstractJpaRepository<Order, Lon
 
         StringBuilder sqlSelect = new StringBuilder("SELECT t1.*");
         StringBuilder sqlContent = new StringBuilder(" FROM order t1")
-                .append(" where t1.status = 1");
+                .append(" where t1.entId = :entId");
 
 
         StringBuilder sqlOrder = new StringBuilder();

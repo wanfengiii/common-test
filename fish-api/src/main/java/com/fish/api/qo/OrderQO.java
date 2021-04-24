@@ -12,4 +12,10 @@ public class OrderQO implements QueryObject {
 
     private Integer isTurn;
 
+    private String startTime;
+
+    private String endTime;
+
+    private Long entId;
+
 }

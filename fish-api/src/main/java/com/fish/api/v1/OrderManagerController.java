@@ -1,11 +1,17 @@
 package com.fish.api.v1;
 
 import com.common.api.response.DataResponse;
+import com.fish.api.dto.FullOrderDTO;
+import com.fish.api.dto.OrderDTO;
+import com.fish.api.qo.OrderQO;
 import com.fish.domain.mysql.Category;
 import com.fish.service.CategoryService;
+import com.fish.service.OrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,33 +21,40 @@ import java.util.List;
 @RequestMapping("/v1/order/manager")
 public class OrderManagerController {
     @Autowired
-    private CategoryService categoryService;
+    private OrderService orderService;
 
     @ApiOperation("查询订单")
     @GetMapping
-    public DataResponse<List<Category>> getOrderList(@RequestParam(required = false) String code) {
-        return DataResponse.of(categoryService.getAllCategories(code));
+    public DataResponse<Page<OrderDTO>> getOrderList(OrderQO qo, Pageable pageable) {
+        return DataResponse.of(orderService.getOrder(qo,pageable));
     }
 
+    @ApiOperation("查询单个订单详细信息")
+    @GetMapping("/{id}")
+    public DataResponse<FullOrderDTO> getOrderById(@PathVariable Long id) {
+        return DataResponse.of(orderService.getOrderById(id));
+    }
+
+
     @ApiOperation("确认订单")
-    @PostMapping("/confirm")
-    public DataResponse confirmOrder(@RequestBody Category category){
-        categoryService.saveCategory(category);
+    @GetMapping("/confirm/{id}")
+    public DataResponse confirmOrder(@PathVariable Long id){
+        orderService.confirmOrder(id);
         return DataResponse.success() ;
     }
 
 
     @ApiOperation("完成订单")
-    @PostMapping("/complete")
-    public DataResponse editOrder(@RequestBody Category category){
-        categoryService.saveCategory(category);
-        return DataResponse.success()   ;
+    @GetMapping("/complete/{id}")
+    public DataResponse completeOrder(@PathVariable Long id){
+        orderService.completeOrder(id);
+        return DataResponse.success();
     }
 
     @ApiOperation("取消订单")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/cancel/{id}")
     public DataResponse deleteOrder(@PathVariable Long id){
-        categoryService.deleteCategory(id);
+        orderService.cancelOrder(id);
         return DataResponse.success() ;
     }
 }
