@@ -17,7 +17,7 @@
     </parent>
 
     <modules>
-        <module>../test-part3</module>
+        <module>../testpart3</module>
         <module>../test-part4</module>
     </modules>
 

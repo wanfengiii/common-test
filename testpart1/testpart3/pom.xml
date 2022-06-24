@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.felix.common</groupId>
-    <artifactId>test-part3</artifactId>
+    <artifactId>testpart3</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>test-part3</name>
+    <name>testpart3</name>
 
     <parent>
         <groupId>com.felix.common</groupId>
