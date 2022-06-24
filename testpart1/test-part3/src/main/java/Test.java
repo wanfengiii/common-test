@@ -4,6 +4,7 @@ public class Test {
     private static String D = "d";
     private static String S = "s";
     // dddd
+    // test
 
     public static void testA() {
         System.out.println(A);
