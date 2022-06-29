@@ -5,6 +5,7 @@ public class Test {
     private static String S = "s";
     // dddd
     // test
+    // aaa
 
     public static void testA() {
         System.out.println(A);
