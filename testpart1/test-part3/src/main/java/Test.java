@@ -6,6 +6,7 @@ public class Test {
     // dddd
     // test
     // aaa
+    // bbb
 
     public static void testA() {
         System.out.println(A);
