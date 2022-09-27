@@ -7,6 +7,7 @@ public class Test {
     // test
     // aaa
     // bbb
+    //dd
 
     public static void testA() {
         System.out.println(A);
